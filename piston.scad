@@ -11,9 +11,9 @@ tsh = 1; //height of the portion holding the top seal
 bsh = 1; // height of the portion holding the bottom seal
 
 // things below needed for the check valve
-inner_bore = 3; // diameter of the inner bore
-pwt = 0.5; // thickness of the piston walls
-exit_hole_dia = 0.5; // diameter of the hole in the piston face
+inner_bore = 4; // diameter of the inner bore
+pwt = 0.3; // thickness of the piston walls
+exit_hole_dia = 0.75; // diameter of the hole in the piston face
 
 // things needed for the top and bottom seals (reciprocating seals)
 grd1 = 0.2; // groove depth - depth of the droove itself
@@ -48,7 +48,9 @@ module piston_noseal(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
         translate([0,0,-midh/2]){cylinder(h=ch-bsh, r=inner_bore/2);}
         translate([0,0,-midh/2-both]){cylinder(h=bsh, r=exit_hole_dia/2);}
       }
-
+      rotate([0,90,0]){translate([0,0,(india+inbore)/4]){
+        millslot(milldia=1, depth=(india-inbore)/2, length=midh);
+      }}
     }
   }
 
@@ -74,4 +76,3 @@ translate([0,0,-4]){
 }
 }*/
 piston_noseal();
-/*millslot();*/
