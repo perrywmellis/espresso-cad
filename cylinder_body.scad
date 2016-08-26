@@ -4,6 +4,7 @@ echo(version=version());
 // my units are [g],[cm],[s]
 // want cylinder body to be at least 3 kg, with bore 5.83 cm. Density naval
 // brass is 8.41 g/cm^3
+// With bore 5.83 cm, a stroke of 3.75 cm has a volume of 100 mL
 
 function wall_thick(mass=3000, bore=5.83, height=20, dens=8.41)
   = (-(bore/2) + sqrt(pow(bore / 2, 2) + 4 * (mass / (PI * height * dens)))) / 2;
@@ -12,12 +13,46 @@ function wall_thick(mass=3000, bore=5.83, height=20, dens=8.41)
 
   t = wall_thick();
 
-module cyl_raw (mass=3000, bore=5.83, height=20, dens=8.41){
+module cyl_raw (mass=3000, bore=5.83, height=7.5, dens=8.41){
   difference(){
     cylinder(h=height, r1=bore / 2 + wall_thick(mass, bore, height, dens), r2=bore / 2 + wall_thick(mass, bore, height, dens));
     cylinder(h=height, r1=bore / 2, r2=bore / 2);
   }
 }
 
-echo(t);
-cyl_raw();
+/*echo(t);*/
+/*cyl_raw();*/
+
+module cutout_shape(length=1, h=1, step=0.5, ang=45, thick=2){
+translate([-length/2,0,0]){
+linear_extrude(height=thick, center=true){
+  polygon(points=[[0, 0], [length, 0], [length, h], [-(h-step)/tan(ang), h], [0, step]]);
+}}}
+
+module cutout_arrange(rad=6, length=1, h=1, step=0.5, ang=45, thick=2 ){
+  translate([0,rad,0]) rotate([90,0,0]) cutout_shape(length, h, step, ang, thick);
+  rotate([0,0,120]) translate([0,rad,0]) rotate([90,0,0]) cutout_shape(length,h, step, ang, thick);
+  rotate([0,0,-120]) translate([0,rad,0]) rotate([90,0,0]) cutout_shape(length,h, step, ang, thick);
+}
+
+module cyl_collar(mass=3000, bore=5.83, height=7.5, dens=8.41, collar_thick=0.5,
+  collar_height=1, cut_len=1, cut_step=0.5, cut_ang=15, cut_thick=2){
+
+  wt = wall_thick(mass, bore, height, dens);
+  ft = wt+collar_thick;
+  fh = collar_height;
+  /*echo(wt);*/
+  /*echo(ft);*/
+  difference(){
+    cylinder(h=fh, r=bore / 2 + ft);
+    cylinder(h=fh, r=bore / 2);
+    cutout_arrange(bore/2+ft, cut_len, fh+1, cut_step, cut_ang, cut_thick);
+  }
+}
+/*union(){
+  cyl_raw();
+  cyl_collar();
+}*/
+union(){
+cyl_collar();
+cyl_raw();}
