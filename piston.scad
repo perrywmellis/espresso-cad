@@ -1,6 +1,6 @@
 echo(version=version());
-$fs=0.1;
-$fa=0.1;
+$fs=1;
+$fa=1;
 
 // piston ... all lengths in [cm], all masses in [g]
 bore = 5.83; // diameter
@@ -8,22 +8,39 @@ ld = 0.1; // land diameter is the difference between the bore dia and piston dia
 cd = bore - ld; // cyl diameter
 ch = 4; // cyl height
 tsh = 1; //height of the portion holding the top seal
-bsh = 1; // height of the portion holding the bottom seal
+bsh = 1.5; // height of the portion holding the bottom seal
 
 // things below needed for the check valve
 inner_bore = 4; // diameter of the inner bore
 pwt = 0.3; // thickness of the piston walls
 exit_hole_dia = 0.75; // diameter of the hole in the piston face
 
-// things needed for the top and bottom seals (reciprocating seals)
-grd1 = 0.2; // groove depth - depth of the droove itself
+// things needed for the top seals (basically a piston guide)
+grd1 = 0.3; // groove depth - depth of the droove itself
 gld1 = grd1 + ld; // gland diameter - froove depth plus land diameter
-gw1 = 0.3; // groove width
+gw1 = 0.5; // groove width
+dh1 = 0.5; // position of gr0ove center measured from TOP
+
+
+// things needed ffor the bottom seal (reciprocating seal)
+grd2 = 0.5; // groove depth - depth of the droove itself
+gld2 = grd2 + ld; // gland diameter - froove depth plus land diameter
+gw2 = 0.75; // groove width
+dh2 = 0.75; // position of groove center measured from BOT
 
 // things needed for the check valve seal (static axial seal)
-grd2 = 0.2; // groove depth
-gw2 = 0.3; // groove width
+grd3 = 0.5; // groove depth
+gw3 = 0.5; // groove width
+id3 = 1; // inner diameter of the groove
 /*color("red")*/
+
+// things needed for the check piston
+ld2 = 0.1; // land diameter between the inner bore and the check piston
+ch_height = 2; // height of the check piston
+ch_slot_width = 1; // width of the slot for the shaft
+ch_slot_depth = 1; // depth of the slot for the shaft
+ch_pin_dia = 0.3; // diameter of pin to hold shaft
+ch_pin_pos = 0.5; // distance from top of check piston to center of pin
 
 module barbell(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
   india=inner_bore+2*pwt){
@@ -54,8 +71,7 @@ module piston_noseal(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
     }
   }
 
-module piston(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
-  india=inner_bore+2*pwt, inbore=inner_bore, exdia=exit_hole_dia){}
+
 
 module millslot(milldia=1, depth=0.5, length=4){
   linear_extrude(height=depth, center=true, convexity=10, twist=0, slices=2,
@@ -68,11 +84,30 @@ module millslot(milldia=1, depth=0.5, length=4){
     }
   }
 }
-// put a hole in the barbell
-/*difference() {
-barbell(2, 2, ch-4, cd, cd-2);
-translate([0,0,-4]){
-  cylinder(h=ch, r=(cd-2)/2-0.2);
+
+module rect_ring(innerdia=1.5, outerdia=2, h=1){
+    difference(){
+      cylinder(h=h, r=outerdia/2);
+      cylinder(h=h, r=innerdia/2);
+    }
 }
-}*/
-piston_noseal();
+
+module piston(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
+  india=inner_bore+2*pwt, inbore=inner_bore, exdia=exit_hole_dia,
+  grd_top=grd1, gw_top=gw1, gpos_top=dh1,
+  grd_bot=grd2, gw_bot=gw2, gpos_bot=dh2,
+  grd_check=grd3, gw_check=gw3, india_check=id3){
+
+  difference(){
+    piston_noseal(toph, both, midh, outdia, india, inbore, exdia);
+    translate([0,0,-midh/2-grd_check]) rect_ring(india_check,
+      india_check + gw_check, grd_check+0.001);
+    translate([0,0,midh/2+toph-gpos_top-gw_top/2]) rect_ring(outdia-2*grd_top,
+      outdia+0.001, gw_top);
+    translate([0,0,-midh/2-both+gpos_bot-gw_bot/2]) rect_ring(outdia-2*grd_bot,
+      outdia+0.001, gw_bot);
+  }
+  }
+
+/*piston();*/
+/*rect_ring();*/
