@@ -4,7 +4,7 @@ $fa=1;
 
 // piston ... all lengths in [cm], all masses in [g]
 bore = 5.83; // diameter
-ld = 0.1; // land diameter is the difference between the bore dia and piston dia
+ld = 0.2; // land diameter is the difference between the bore dia and piston dia
 cd = bore - ld; // cyl diameter
 ch = 4; // cyl height
 tsh = 1; //height of the portion holding the top seal
@@ -35,7 +35,7 @@ id3 = 1; // inner diameter of the groove
 /*color("red")*/
 
 // things needed for the check piston
-ld2 = 0.1; // land diameter between the inner bore and the check piston
+ld2 = 0.2; // land diameter between the inner bore and the check piston
 ch_height = 2; // height of the check piston
 ch_slot_width = 1; // width of the slot for the shaft
 ch_slot_depth = 1; // depth of the slot for the shaft
@@ -109,5 +109,17 @@ module piston(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
   }
   }
 
+module check_piston(dia=inner_bore-ld2, h=ch_height, slot_w=ch_slot_width,
+  slot_d=ch_slot_depth, pindia=ch_pin_dia, pinpos=ch_pin_pos){
+
+  difference(){
+    cylinder(h=h, r=dia/2);
+    translate([0,0,h-slot_d/2]) cube(size=[slot_w, dia, slot_d], center=true);
+    translate([0,0,h-pinpos]) rotate([0,90,0]) translate([0,0,-dia/2]){
+      cylinder(h=dia+0.001, r=pindia/2);}
+  }
+
+  }
 /*piston();*/
 /*rect_ring();*/
+check_piston();
