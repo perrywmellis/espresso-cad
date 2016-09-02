@@ -12,10 +12,10 @@ bore = 5.83; // cm
 bore_h = 10; // cm
 min_wall_thick = 0.5; // cm
 max_wall_thick = 2; // cm
-group_h = 20; // cm
+group_h = 15; // cm
 
-hopper_min_wall_thick = 0.2;
-hopper_back_wall_thick = 1;
+hopper_min_wall_thick = 0.5;
+hopper_back_wall_thick = 1.5;
 lever_tooth_h = 1;
 lever_tooth_l = 0.5; // y distance of tooth for the lever
 
@@ -58,8 +58,8 @@ module hopper_negative(sz=[10,10,10], tooth_h=1, tooth_w=2, tooth_l=0.5 ){
     cube(sz, center=true);
     translate([0, -sz[1]/2-tooth_w/2, sz[2]/2-tooth_h/2]){
       difference(){
-        cube([sz[0], tooth_w, tooth_h], center=true);
-        cube([tooth_l, tooth_w, tooth_h], center=true);
+        cube([sz[0], tooth_w+0.0001, tooth_h], center=true);
+        cube([tooth_l, tooth_w+0.0001, tooth_h], center=true);
 }}}}
 
 module group(){
