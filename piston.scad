@@ -3,8 +3,12 @@ $fs=1;
 $fa=1;
 
 // piston ... all lengths in [cm], all masses in [g]
+
+// constants and dimensions below
+//
+
 bore = 5.83; // diameter
-ld = 0.2; // land diameter is the difference between the bore dia and piston dia
+ld = 0.1; // land diameter is the difference between the bore dia and piston dia
 cd = bore - ld; // cyl diameter
 ch = 4; // cyl height
 tsh = 1; //height of the portion holding the top seal
@@ -35,12 +39,15 @@ id3 = 1; // inner diameter of the groove
 /*color("red")*/
 
 // things needed for the check piston
-ld2 = 0.2; // land diameter between the inner bore and the check piston
+ld2 = 0.1; // land diameter between the inner bore and the check piston
 ch_height = 2; // height of the check piston
 ch_slot_width = 1; // width of the slot for the shaft
 ch_slot_depth = 1; // depth of the slot for the shaft
 ch_pin_dia = 0.3; // diameter of pin to hold shaft
 ch_pin_pos = 0.5; // distance from top of check piston to center of pin
+
+//modules below
+//
 
 module barbell(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
   india=inner_bore+2*pwt){
@@ -53,8 +60,8 @@ module barbell(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
   }
   translate([0,0,-midh/2-both]){
     cylinder(h=both, r=outdia/2);
-  }
-}
+}}
+
 
 module piston_noseal(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
   india=inner_bore+2*pwt, inbore=inner_bore, exdia=exit_hole_dia){
@@ -67,10 +74,7 @@ module piston_noseal(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
       }
       rotate([0,90,0]){translate([0,0,(india+inbore)/4]){
         millslot(milldia=1, depth=(india-inbore)/2, length=midh);
-      }}
-    }
-  }
-
+}}}}
 
 
 module millslot(milldia=1, depth=0.5, length=4){
@@ -81,16 +85,15 @@ module millslot(milldia=1, depth=0.5, length=4){
       translate([(length-milldia)/2,0,0]){circle(d=milldia);}
       translate([-(length-milldia)/2,0,0]){circle(d=milldia);}
       square(size=[length-milldia,milldia], center=true);
-    }
-  }
-}
+}}}
+
 
 module rect_ring(innerdia=1.5, outerdia=2, h=1){
     difference(){
       cylinder(h=h, r=outerdia/2);
       cylinder(h=h, r=innerdia/2);
-    }
-}
+}}
+
 
 module piston(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
   india=inner_bore+2*pwt, inbore=inner_bore, exdia=exit_hole_dia,
@@ -106,8 +109,8 @@ module piston(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
       outdia+0.001, gw_top);
     translate([0,0,-midh/2-both+gpos_bot-gw_bot/2]) rect_ring(outdia-2*grd_bot,
       outdia+0.001, gw_bot);
-  }
-  }
+}}
+
 
 module check_piston(dia=inner_bore-ld2, h=ch_height, slot_w=ch_slot_width,
   slot_d=ch_slot_depth, pindia=ch_pin_dia, pinpos=ch_pin_pos){
@@ -117,9 +120,12 @@ module check_piston(dia=inner_bore-ld2, h=ch_height, slot_w=ch_slot_width,
     translate([0,0,h-slot_d/2]) cube(size=[slot_w, dia, slot_d], center=true);
     translate([0,0,h-pinpos]) rotate([0,90,0]) translate([0,0,-dia/2]){
       cylinder(h=dia+0.001, r=pindia/2);}
-  }
+}}
 
-  }
+//outputs below
+echo("piston height is ", ch, " cm");
+echo("piston volume is ", pow((bore-ld)/2,2)*3.1415*ch, " cm^3");
+
 /*piston();*/
 /*rect_ring();*/
-check_piston();
+/*check_piston();*/
