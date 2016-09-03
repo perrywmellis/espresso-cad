@@ -12,7 +12,7 @@ bore = 5.83; // cm
 bore_h = 10; // cm
 min_wall_thick = 0.5; // cm
 max_wall_thick = 2; // cm
-group_h = 15; // cm
+group_h = 20; // cm
 
 hopper_min_wall_thick = 0.5;
 hopper_back_wall_thick = 1.5;
@@ -29,13 +29,20 @@ post_hole_h = 2; // cm
 screen_d_delta = 0.5;
 screen_h = 0.5;
 
-// calcs here
+// calcs here for geometries
 l = bore + min_wall_thick + max_wall_thick; //group len and width
 w = l;
 
 hl = l- 2*hopper_min_wall_thick;
 hw = l - hopper_min_wall_thick - hopper_back_wall_thick;
 hh = group_h - bore_h;
+
+// calcs here to output volume
+cyl_vol = 3.1415*pow((bore/2),2) * bore_h;
+hopper_vol = hl*hw*(hh-lever_tooth_h);
+total_vol = l*w*(group_h-lever_tooth_h);
+
+//modules below
 
 
 module bored_rect(sz=[10,10,10], r=2, pos=[0,2]){
@@ -69,11 +76,20 @@ module group(){
       hopper_back_wall_thick-hopper_min_wall_thick, lever_tooth_l);}
 }}
 
+
+// outputs here
+echo("total volume is ", total_vol, " cm^3");
+echo("cylinder volume is ", cyl_vol, " cm^3");
+echo("hopper volume is ", hopper_vol, " cm^3");
+echo("water volume is ", hopper_vol+cyl_vol, " cm^3");
+echo("brass volume is ", total_vol-hopper_vol-cyl_vol, " cm^3");
+
+
 /*bored_rect(sz=[l,w,group_h], r=bore/2, pos=[0,w/2-bore/2-min_wall_thick]);*/
 /*hopper_negative([hl,hw,hh], lever_tooth_h,*/
   /*hopper_back_wall_thick-hopper_min_wall_thick, lever_tooth_l);*/
-  /*hopper_negative();*/
+/*hopper_negative();*/
 
-  /*echo([hl,hw,hh]);*/
-  /*echo(sz);*/
+/*echo([hl,hw,hh]);*/
+/*echo(sz);*/
 group();
