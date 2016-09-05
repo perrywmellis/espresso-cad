@@ -9,16 +9,16 @@ echo(version=version());
 
 // Constants here
 bore = 5.83; // cm
-bore_h = 9; // cm
+bore_h = 9; // cm this needs to long enough to have a 3 cm stroke with a 4 cm piston
 min_wall_thick = 2; // cm
 max_wall_thick = 2; // cm
 /*group_h = 15; // cm*/
 group_h = (bore + min_wall_thick + max_wall_thick)*1.618; // cm try golden ratio
 
-lever_tooth_h = 1.1;
-lever_tooth_l = 0.5; // y distance of tooth for the lever
-lever_tooth_w = 1.1; // x distance of the tooth for the lever
-lever_pin_d = 0.3 + 0.005; // diameter of hole in the slot for the lever
+lever_tooth_h = 2;
+lever_tooth_l = 0.5; // x distance of tooth for the lever
+lever_tooth_w = 1.5; // y distance of the tooth for the lever
+lever_pin_d = 0.3 + 0.05; // diameter of hole in the slot for the lever
 
 hopper_min_wall_thick = 0.5;
 hopper_back_wall_thick = max_wall_thick - lever_tooth_w;
