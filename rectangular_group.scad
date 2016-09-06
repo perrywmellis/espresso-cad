@@ -21,7 +21,7 @@ lever_tooth_w = 1.5; // y distance of the tooth for the lever
 lever_teeth_sep = 2+0.05; // distance betweent he 2 teeth
 lever_pin_d = 0.3 + 0.05; // diameter of hole in the slot for the lever
 lever_pin_shift = [0,0.25];
-lever_front_notch_1 = 1;
+lever_front_notch_1 = 1.5;
 lever_front_notch_h = lever_tooth_h/2-lever_pin_shift[1] +
   tan(15)*(bore+min_wall_thick+max_wall_thick-(max_wall_thick-lever_tooth_w/2));
 
@@ -146,6 +146,6 @@ echo("brass volume is ", total_vol-hopper_vol-cyl_vol, " cm^3");
   /*hopper_back_wall_thick-hopper_min_wall_thick, lever_tooth_l);*/
 /*hopper_negative();*/
 
-group();
+/*group();*/
 /*cartridge_heater_negative();*/
 /*post_negative();*/
