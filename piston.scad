@@ -1,6 +1,6 @@
 echo(version=version());
-$fs=1;
-$fa=1;
+/*$fs=1;
+$fa=1;*/
 
 // piston ... all lengths in [cm], all masses in [g]
 
@@ -73,7 +73,7 @@ module piston_noseal(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
         translate([0,0,-midh/2-both]){cylinder(h=bsh, r=exit_hole_dia/2);}
       }
       rotate([0,90,0]){translate([0,0,(india+inbore)/4]){
-        millslot(milldia=1, depth=(india-inbore)/2, length=midh);
+        millslot(milldia=1, depth=(india-inbore)/2+2, length=midh);
 }}}}
 
 
