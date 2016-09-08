@@ -17,16 +17,16 @@ group_h = (bore + min_wall_thick + max_wall_thick)*1.618; // cm try golden ratio
 
 lever_tooth_h = 2;
 lever_tooth_l = 0.75; // x distance of tooth for the lever
-lever_tooth_w = 1.5; // y distance of the tooth for the lever
+lever_tooth_w = 2; // y distance of the tooth for the lever
 lever_teeth_sep = 2+0.05; // distance betweent he 2 teeth
 lever_pin_d = 0.3 + 0.05; // diameter of hole in the slot for the lever
 lever_pin_shift = [0,0.25];
 lever_front_notch_1 = 1.5;
-lever_front_notch_h = lever_tooth_h/2-lever_pin_shift[1] +
+lever_front_notch_h = -lever_tooth_h/2-lever_pin_shift[1] +
   tan(15)*(bore+min_wall_thick+max_wall_thick-(max_wall_thick-lever_tooth_w/2));
 
 hopper_min_wall_thick = 0.5;
-hopper_back_wall_thick = max_wall_thick - lever_tooth_w;
+hopper_back_wall_thick = max_wall_thick;
 
 
 cartridge_heater_d = 1; // cm
@@ -43,13 +43,13 @@ l = bore + min_wall_thick + max_wall_thick; //group len and width
 w = l;
 
 hl = l- 2*hopper_min_wall_thick;
-hw = l - hopper_min_wall_thick - hopper_back_wall_thick-lever_tooth_w;
+hw = l - hopper_min_wall_thick - hopper_back_wall_thick;
 hh = group_h - bore_h;
 
 // calcs here to output volume
 cyl_vol = 3.1415*pow((bore/2),2) * bore_h;
-hopper_vol = hl*hw*(hh-lever_tooth_h);
-total_vol = l*w*(group_h-lever_tooth_h);
+hopper_vol = hl*hw*(hh);
+total_vol = l*w*(group_h);
 
 //modules below
 
@@ -69,29 +69,31 @@ module bored_rect(sz=[10,10,10], r=2, pos=[0,2]){
   }}}}
 
 
-module hopper_negative(sz=[10,10,10], tooth_h=1, tooth_w=2, tooth_l=0.5,
-  tooth_hole_d=0.5, teeth_sep=2, tooth_hole_shift=[0,0], notch_l=2, notch_h=4)
-  {
+module hopper_negative(sz=[10,10,10], notch_l=2, notch_h=4){
   echo(sz);
   union(){
     cube(sz, center=true);
-    translate([0, -sz[1]/2-tooth_w/2, sz[2]/2-tooth_h/2]){
-      difference(){
-        union(){
-          cube([sz[0], tooth_w+0.0001, tooth_h+0.0001], center=true);
-          translate([0,-tooth_w/2,0]) cube([teeth_sep,2,tooth_h+0.0001], center=true);}
-        translate([teeth_sep/2+tooth_l/2,0,0])
-          cube([tooth_l, tooth_w+0.0001, tooth_h+0.0001], center=true);
-        translate([-teeth_sep/2-tooth_l/2,0,0])
-          cube([tooth_l, tooth_w+0.0001, tooth_h+0.0001], center=true);}
-      translate([0,tooth_hole_shift[0], tooth_hole_shift[1]])
-        rotate([0,90,0])
-          cylinder(h=2*tooth_l+teeth_sep+0.0001, r=tooth_hole_d/2, center=true);
-      }
-      translate([0, sz[1]/2+1/2, sz[2]/2-notch_h/2])
-        cube([notch_l, 1, notch_h], center=true);
+    translate([0, sz[1]/2+1/2, sz[2]/2-notch_h/2])
+      cube([notch_l, 1, notch_h], center=true);
+  }
+}
 
-}}
+module teeth(tooth_h=1, tooth_w=2, tooth_l=0.5, tooth_hole_d=0.5, teeth_sep=2,
+  tooth_hole_shift=[0,0]){
+
+  difference(){
+    union(){
+      translate([teeth_sep/2+tooth_l/2,0,0])
+        cube([tooth_l, tooth_w+0.0001, tooth_h+0.0001], center=true);
+      translate([-teeth_sep/2-tooth_l/2,0,0])
+        cube([tooth_l, tooth_w+0.0001, tooth_h+0.0001], center=true);}
+
+    translate([0,tooth_hole_shift[0], tooth_hole_shift[1]])
+      rotate([0,90,0])
+        cylinder(h=2*tooth_l+teeth_sep+0.0001, r=tooth_hole_d/2, center=true);
+  }
+}
+
 
 module cartridge_heater_negative(block_h=2, block_w=2, heater_d=1,
    heater_h=10, heater_sep=2){
@@ -112,12 +114,15 @@ module post_negative(post_d=1, post_h=5, post_x=3, post_y=3){
 
 module group(){
   difference(){
-    bored_rect(sz=[l,w,group_h], r=bore/2, pos=[0,w/2-bore/2-min_wall_thick]);
+    union(){
+      bored_rect(sz=[l,w,group_h], r=bore/2, pos=[0,0]);
+      translate([0,-w/2+lever_tooth_w/2,group_h/2+lever_tooth_h/2])
+        teeth(lever_tooth_h, lever_tooth_w, lever_tooth_l, lever_pin_d,
+              lever_teeth_sep, lever_pin_shift);
+    }
 
-    translate([0,w/2-hw/2-hopper_min_wall_thick,group_h/2-hh/2]){
-      hopper_negative([hl,hw,hh], lever_tooth_h, lever_tooth_w, lever_tooth_l,
-      lever_pin_d, lever_teeth_sep, lever_pin_shift,
-      lever_front_notch_1, lever_front_notch_h);}
+    translate([0,w/2-hw/2-hopper_min_wall_thick,group_h/2-hh/2])
+      hopper_negative([hl,hw,hh], lever_front_notch_1, lever_front_notch_h);
 
     translate([0,-w/2+(max_wall_thick-0.5)/2,
       -group_h/2+cartridge_heater_notch_h/2]){cartridge_heater_negative(
@@ -145,7 +150,7 @@ echo("brass volume is ", total_vol-hopper_vol-cyl_vol, " cm^3");
 /*hopper_negative([hl,hw,hh], lever_tooth_h,*/
   /*hopper_back_wall_thick-hopper_min_wall_thick, lever_tooth_l);*/
 /*hopper_negative();*/
-
+/*teeth();*/
 /*group();*/
 /*cartridge_heater_negative();*/
 /*post_negative();*/
