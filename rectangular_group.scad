@@ -3,14 +3,6 @@ echo(version=version());
 // cylinder portion of the group
 include <constants.scad>
 
-// calcs here for geometries
-l = bore + min_wall_thick + max_wall_thick; //group len and width
-w = l;
-
-hl = l- 2*hopper_min_wall_thick;
-hw = l - hopper_min_wall_thick - hopper_back_wall_thick;
-hh = group_h - bore_h;
-
 // calcs here to output volume
 cyl_vol = 3.1415*pow((bore/2),2) * bore_h;
 hopper_vol = hl*hw*(hh);
@@ -151,7 +143,7 @@ echo("brass volume is ", total_vol-hopper_vol-cyl_vol, " cm^3");
   /*hopper_back_wall_thick-hopper_min_wall_thick, lever_tooth_l);*/
 /*hopper_negative();*/
 /*teeth();*/
-group();
+/*group();*/
 /*group_tocast();*/
 /*cartridge_heater_negative();*/
 /*post_negative();*/
