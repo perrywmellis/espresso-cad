@@ -2,25 +2,7 @@ echo("This is the file holding the lever and the shaft");
 $fs=.5;
 $fa=.5;
 
-// Constants
-total_lever_len = 30.5; // cm
-
-block_w = 8; // cm
-block_l = 2; // cm
-block_h =  2; // cm
-block_slot_l = 0.5 + 0.1; // cm
-block_slot_w = 3; // cm
-block_pin_d = 0.3+0.05; // cm
-block_group_hole_pos = 0.5; // cm
-block_shaft_hole_pos = block_group_hole_pos + 2.143; // cm
-block_lever_hole_h = 2;
-
-handle_d = 2.5; // cm
-handle_l = 10; // cm
-
-lever_d = 1; // cm
-lever_l = total_lever_len - block_w - handle_l + block_group_hole_pos +
-  block_lever_hole_h; // cm
+include <constants.scad>
 
 module block(lwh = [4,10,4], slot_l=1, slot_w=2, pin_pos1=1, pin_pos2=4, pin_d=2,
   hole_d=2, hole_h=3, ){
@@ -57,4 +39,4 @@ module lever(){
 /*block();*/
 /*rotate([90,0,0])*/
 /*lever_handle();*/
-/*lever();*/
+lever();

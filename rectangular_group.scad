@@ -1,42 +1,7 @@
 echo(version=version());
 
 // cylinder portion of the group
-// my units are [g], [cm], [s]
-// want operating volume to be max 500 mL
-// Density of naval brass is 8.41 g/cm^3
-// With a bore of 5.83 cm, a stroke of 3.75 cm has a volume of 100 mL and a
-//     stroke of 3 cm has a volume of 80 mL
-
-// Constants here
-bore = 5.83; // cm
-bore_h = 9; // cm this needs to long enough to have a 3 cm stroke with a 4 cm piston
-min_wall_thick = 2; // cm
-max_wall_thick = 2; // cm
-/*group_h = 15; // cm*/
-group_h = (bore + min_wall_thick + max_wall_thick)*1.618; // cm try golden ratio
-
-lever_tooth_h = 2;
-lever_tooth_l = 0.75; // x distance of tooth for the lever
-lever_tooth_w = 2; // y distance of the tooth for the lever
-lever_teeth_sep = 2+0.05; // distance betweent he 2 teeth
-lever_pin_d = 0.3 + 0.05; // diameter of hole in the slot for the lever
-lever_pin_shift = [0,0.25];
-lever_front_notch_1 = 1.5;
-lever_front_notch_h = -lever_tooth_h/2-lever_pin_shift[1] +
-  tan(15)*(bore+min_wall_thick+max_wall_thick-(max_wall_thick-lever_tooth_w/2));
-
-hopper_min_wall_thick = 0.5;
-hopper_back_wall_thick = max_wall_thick;
-
-
-cartridge_heater_d = 1; // cm
-cartridge_heater_h = 10; // cm
-cartridge_heater_notch_h = 1;// cm
-post_d = 1.5; // cm
-post_hole_h = 5; // cm
-
-screen_d_delta = 0.5;
-screen_h = 0.5;
+include <constants.scad>
 
 // calcs here for geometries
 l = bore + min_wall_thick + max_wall_thick; //group len and width
@@ -111,6 +76,23 @@ module post_negative(post_d=1, post_h=5, post_x=3, post_y=3){
   translate([-post_x,-post_y,0]) cylinder(h=post_h, r=post_d/2);
 }
 
+module portafilter_holder(holder_h=2, holder_l=1, holder_w=0.5, holder_thick=1,
+                          holder_d=5){
+  translate([0, -holder_d/2-holder_w/2, 0])
+  union(){
+    cube([holder_l, holder_w, holder_h], center=true);
+    translate([0, holder_thick/2 + holder_w/2, -holder_h/2+holder_w/2])
+      cube([holder_l, holder_thick, holder_w], center=true);
+  }
+
+  mirror([0,1,0])
+    translate([0, -holder_d/2-holder_w/2, 0])
+      union(){
+        cube([holder_l, holder_w, holder_h], center=true);
+        translate([0, holder_thick/2 + holder_w/2, -holder_h/2+holder_w/2])
+          cube([holder_l, holder_thick, holder_w], center=true);
+      }
+}
 
 module group(){
   difference(){
@@ -119,6 +101,9 @@ module group(){
       translate([0,-w/2+lever_tooth_w/2,group_h/2+lever_tooth_h/2])
         teeth(lever_tooth_h, lever_tooth_w, lever_tooth_l, lever_pin_d,
               lever_teeth_sep, lever_pin_shift);
+      rotate([0,0,90])
+        translate([0,0,-group_h/2-porta_h/2])
+          portafilter_holder(porta_h, porta_l, porta_w, porta_thick, porta_dia);
     }
 
     translate([0,w/2-hw/2-hopper_min_wall_thick,group_h/2-hh/2])
@@ -134,6 +119,21 @@ module group(){
 
     translate([0,0,-group_h/2]) cylinder(h=screen_h, r=(bore+screen_d_delta)/2);
 }}
+
+module group_tocast(){
+  difference(){
+    union(){
+      bored_rect(sz=[l,w,group_h], r=bore/2, pos=[0,0]);
+      translate([0,-w/2+lever_tooth_w/2,group_h/2+lever_tooth_h/2])
+        cube([2*lever_tooth_l+lever_teeth_sep,lever_tooth_w,lever_tooth_h], center=true);
+      rotate([0,0,90])
+        translate([0,0,-group_h/2-porta_h/2])
+          portafilter_holder(porta_h, porta_l, porta_w+porta_thick, 0, porta_dia-2*porta_thick);
+    }
+    translate([0,w/2-hw/2-hopper_min_wall_thick,group_h/2-hh/2])
+      hopper_negative([hl,hw,hh], lever_front_notch_1, lever_front_notch_h);
+  }
+}
 
 
 // outputs here
@@ -151,6 +151,8 @@ echo("brass volume is ", total_vol-hopper_vol-cyl_vol, " cm^3");
   /*hopper_back_wall_thick-hopper_min_wall_thick, lever_tooth_l);*/
 /*hopper_negative();*/
 /*teeth();*/
-/*group();*/
+group();
+/*group_tocast();*/
 /*cartridge_heater_negative();*/
 /*post_negative();*/
+/*portafilter_holder();*/
