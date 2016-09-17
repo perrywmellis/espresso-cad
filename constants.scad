@@ -78,3 +78,15 @@
   lever_d = 1; // cm
   lever_l = total_lever_len - block_w - handle_l + block_group_hole_pos +
     block_lever_hole_h; // cm
+
+//
+// paramters for the portafilter
+//
+
+  basket_hole_d = bore + 5.89; // cm basket overhang diameter
+  basket_hole_thick_upper; = 0.05;
+  basket_hole_thick_lower; = 0.2; // cm
+  basket_hole_upper_h = 0.1;
+  basket_hole_lower_h = 1;
+  porta_body_d = porta_dia-0.01; // cm 100 micron less than holder
+  porta_body_h = 1;
