@@ -2,52 +2,9 @@ echo(version=version());
 /*$fs=1;
 $fa=1;*/
 
-// piston ... all lengths in [cm], all masses in [g]
+// piston
 
-// constants and dimensions below
-//
-
-bore = 5.83; // diameter
-ld = 0.1; // land diameter is the difference between the bore dia and piston dia
-cd = bore - ld; // cyl diameter
-ch = 4; // cyl height
-tsh = 1; //height of the portion holding the top seal
-bsh = 1.5; // height of the portion holding the bottom seal
-
-// things below needed for the check valve
-inner_bore = 4; // diameter of the inner bore
-pwt = 0.3; // thickness of the piston walls
-exit_hole_dia = 0.75; // diameter of the hole in the piston face
-
-// things needed for the top seals (basically a piston guide)
-grd1 = 0.3; // groove depth - depth of the droove itself
-gld1 = grd1 + ld; // gland diameter - froove depth plus land diameter
-gw1 = 0.5; // groove width
-dh1 = 0.5; // position of gr0ove center measured from TOP
-
-
-// things needed ffor the bottom seal (reciprocating seal)
-grd2 = 0.5; // groove depth - depth of the droove itself
-gld2 = grd2 + ld; // gland diameter - froove depth plus land diameter
-gw2 = 0.75; // groove width
-dh2 = 0.75; // position of groove center measured from BOT
-
-// things needed for the check valve seal (static axial seal)
-grd3 = 0.5; // groove depth
-gw3 = 0.5; // groove width
-id3 = 1; // inner diameter of the groove
-/*color("red")*/
-
-// things needed for the check piston
-ld2 = 0.1; // land diameter between the inner bore and the check piston
-ch_height = 2; // height of the check piston
-ch_slot_width = 1; // width of the slot for the shaft
-ch_slot_depth = 1; // depth of the slot for the shaft
-ch_pin_dia = 0.3; // diameter of pin to hold shaft
-ch_pin_pos = 0.5; // distance from top of check piston to center of pin
-
-//modules below
-//
+include <constants.scad>
 
 module barbell(toph=tsh, both=bsh, midh=ch-bsh-tsh, outdia=cd,
   india=inner_bore+2*pwt){
@@ -126,6 +83,6 @@ module check_piston(dia=inner_bore-ld2, h=ch_height, slot_w=ch_slot_width,
 echo("piston height is ", ch, " cm");
 echo("piston volume is ", pow((bore-ld)/2,2)*3.1415*ch, " cm^3");
 
-/*piston();*/
+piston();
 /*rect_ring();*/
 /*check_piston();*/

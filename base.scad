@@ -1,12 +1,6 @@
 // file for the base
 
-include <rectangular_group.scad>
-base_h = l/1.618; // cm golden ratio again
-leg_h = l + post_hole_h + base_h;
-base_thick=2;
-
-
-
+include <constants.scad>
 
 module group_legs(leg_d=1, leg_h=10, leg_x=3, leg_y=3){
   translate([leg_x,-leg_y,0]) cylinder(h=leg_h, r=leg_d/2);
@@ -40,4 +34,4 @@ module base(){
 
 /*group_legs();*/
 /*baseplate();*/
-/*base();*/
+base();

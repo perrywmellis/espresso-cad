@@ -53,6 +53,58 @@
   porta_thick=0.5;
   porta_dia=bore+2;
 
+  // calcs here for geometries
+  l = bore + min_wall_thick + max_wall_thick; //group len and width
+  w = l;
+
+  hl = l- 2*hopper_min_wall_thick;
+  hw = l - hopper_min_wall_thick - hopper_back_wall_thick;
+  hh = group_h - bore_h;
+
+//
+// parameters for the piston
+//
+
+  // things for the piston body
+  ld = 0.1; // land diameter is the difference between the bore dia and piston dia
+  cd = bore - ld; // cyl diameter
+  ch = 4; // cyl height
+  tsh = 1; //height of the portion holding the top seal
+  bsh = 1.5; // height of the portion holding the bottom seal
+
+  // things needed for the check valve
+  inner_bore = 4; // diameter of the inner bore
+  pwt = 0.3; // thickness of the piston walls
+  exit_hole_dia = 0.75; // diameter of the hole in the piston face
+
+  // things needed for the top seals (basically a piston guide)
+  grd1 = 0.3; // groove depth - depth of the droove itself
+  gld1 = grd1 + ld; // gland diameter - froove depth plus land diameter
+  gw1 = 0.5; // groove width
+  dh1 = 0.5; // position of gr0ove center measured from TOP
+
+
+  // things needed for the bottom seal (reciprocating seal)
+  grd2 = 0.5; // groove depth - depth of the droove itself
+  gld2 = grd2 + ld; // gland diameter - froove depth plus land diameter
+  gw2 = 0.75; // groove width
+  dh2 = 0.75; // position of groove center measured from BOT
+
+  // things needed for the check valve seal (static axial seal)
+  grd3 = 0.5; // groove depth
+  gw3 = 0.5; // groove width
+  id3 = 1; // inner diameter of the groove
+  /*color("red")*/
+
+  // things needed for the check piston
+  ld2 = 0.1; // land diameter between the inner bore and the check piston
+  ch_height = 2; // height of the check piston
+  ch_slot_width = 1; // width of the slot for the shaft
+  ch_slot_depth = 1; // depth of the slot for the shaft
+  ch_pin_dia = 0.3; // diameter of pin to hold shaft
+  ch_pin_pos = 0.5; // distance from top of check piston to center of pin
+
+
 //
 // paramters for the lever
 //
@@ -90,3 +142,11 @@
   basket_hole_lower_h = 1;
   porta_body_d = porta_dia-0.01; // cm 100 micron less than holder
   porta_body_h = 1;
+
+//
+// paramters for the base
+//
+
+  base_h = l/1.618; // cm golden ratio again
+  leg_h = l + post_hole_h + base_h;
+  base_thick=2;
